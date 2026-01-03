@@ -6,7 +6,7 @@ API_KEY = "AIzaSyBSKFSiObhfgUQZoU-zyclLp82hcqZ8TfY"
 genai.configure(api_key=API_KEY)
 
 # 改用最通用的 gemini-pro 模型名
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 # 2. 手機版介面優化
 st.set_page_config(page_title="禾多移動分析App", page_icon="🚀")
