@@ -5,9 +5,6 @@ import google.generativeai as genai
 API_KEY = "AIzaSyBSKFSiObhfgUQZoU-zyclLp82hcqZ8TfY"
 genai.configure(api_key=API_KEY)
 
-# 改用最通用的 gemini-pro 模型名
-model = genai.GenerativeModel('gemini-1.5-flash')
-
 # 2. 手機版介面優化
 st.set_page_config(page_title="禾多移動分析App", page_icon="🚀")
 st.markdown("<style>header {visibility: hidden;} footer {visibility: hidden;} #MainMenu {visibility: hidden;}</style>", unsafe_allow_html=True)
@@ -40,22 +37,28 @@ with col2:
     if st.button("🏆 頂尖推薦技術", use_container_width=True):
         topic, query = "MTSTRec 技術", "請說明MTSTRec技術是什麼？它在推薦系統上的突破點在哪？"
 
+# AI 調用函數（自動嘗試不同模型名稱）
+def get_ai_response(prompt):
+    # 優先嘗試 Flash (最快最穩)
+    model_names = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-pro']
+    for name in model_names:
+        try:
+            model = genai.GenerativeModel(name)
+            response = model.generate_content(prompt)
+            return response.text
+        except Exception:
+            continue
+    return "連線失敗，請檢查 Google AI Studio 權限。"
+
 if query:
     st.divider()
     st.subheader(f"🔍 分析：{topic}")
     with st.spinner("AI 正在思考中..."):
-        try:
-            # 加入安全性與錯誤處理
-            response = model.generate_content(f"{CONTEXT}\n\n問題：{query}")
-            st.write(response.text)
-        except Exception as e:
-            st.error(f"連線失敗，請確認 API Key 是否有效。錯誤訊息：{e}")
+        result = get_ai_response(f"{CONTEXT}\n\n問題：{query}")
+        st.write(result)
 
 st.divider()
 user_q = st.text_input("💬 自由提問：")
 if user_q:
-    try:
-        res = model.generate_content(f"{CONTEXT}\n\n問題：{user_q}")
-        st.write(res.text)
-    except:
-        st.error("暫時無法連線至 AI，請稍後再試。")
+    with st.spinner("查詢中..."):
+        st.write(get_ai_response(f"{CONTEXT}\n\n問題：{user_q}"))
