@@ -4,8 +4,7 @@ import google.generativeai as genai
 # 1. 填入你提供的 API Key
 API_KEY = "AIzaSyBSKFSiObhfgUQZoU-zyclLp82hcqZ8TfY"
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
-
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 # 2. 手機版介面優化（隱藏上方選單與底部標籤）
 st.set_page_config(page_title="禾多移動分析App", page_icon="🚀")
 st.markdown("""
